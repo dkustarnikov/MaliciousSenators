@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "615867293638",
+    "project_id": "malicious-senators",
+    "storage_bucket": "malicious-senators.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615867293638:android:409e34658a6dd4a9e7dcc7",
+        "android_client_info": {
+          "package_name": "com.malicioussenators"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615867293638-56pjdmad64jg86eeltd58vfbckgabq4m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGW5890BBUKGPoYVxQ_xQ-dWyyWi_P4wI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615867293638-56pjdmad64jg86eeltd58vfbckgabq4m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
