@@ -27,10 +27,6 @@ public class SubmitApplicationActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    String doNothing() {
-        return "nothing";
-    }
-
     static Application convertDocumentToApplication(DocumentSnapshot doc) {
         Application app = new Application();
 
@@ -38,6 +34,34 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         app.setStudentNumber(doc.get("studentNumber").toString());
 
         return app;
+    }
+
+    public Application searchStudentInfo(String StudentNum) {
+        Application application = new Application();
+        db.collection("RegistrarDataStore")
+                .whereEqualTo("studentNumber", StudentNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                        if (documents.size() > 1) {
+
+                        }
+                        else if (documents.size() == 0){
+                            return;
+                        }
+                        else {
+                            application.setEmpty(false);
+                            application.setFirstName(documents.get(0).get("firstName").toString());
+                            application.setLastName(documents.get(0).get("lastName").toString());
+                            application.setZipCode(documents.get(0).get("zipCode").toString());
+                            application.setDoB(documents.get(0).get("DoB").toString());
+                            application.setPhoneNum(documents.get(0).get("phoneNumber").toString());
+                            application.seteMail(documents.get(0).get("eMail").toString());
+                            application.setStudentNumber(StudentNum);
+                        }
+                    }
+                });
+        return application;
     }
 
     Application getApplicationById(String id) {
