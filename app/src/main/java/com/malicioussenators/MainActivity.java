@@ -55,5 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FirebaseApp.initializeApp(this);
+
+
     }
 }

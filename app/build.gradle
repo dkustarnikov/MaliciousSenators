@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.malicioussenators"
-        minSdk 28
+        minSdk 33
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -40,4 +40,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
 }
