@@ -152,7 +152,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                 String lastName = lastNameEditText.getText().toString();
                 String zipCode = zipCodeEditText.getText().toString();
                 String DoB = dobEditText.getText().toString();
-                String PhoneNumber = phoneNumberEditText.getText().toString();
+                String phoneNumber = phoneNumberEditText.getText().toString();
 
                 Application studentInfo = searchStudentInfo(studentNumber);
                 if(studentInfo.isEmpty()) {
@@ -179,9 +179,25 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                     infoError = infoError + " last name";
                     infoNoMatch = true;
                 }
+                if(zipCode != studentInfo.getZipCode()) {
+                    contactError = contactError + "Zip code";
+                    contactNoMatch = true;
+                }
+                if(phoneNumber != studentInfo.getPhoneNum()) {
+                    contactError = contactError + " phone number";
+                    contactNoMatch = true;
+                }
 
-                errorTextView.setTextColor(Color.RED);
-                errorTextView.setText(firstName);
+                if(infoNoMatch) {
+                    infoError = infoError + "-Please reenter data";
+                    errorTextView.setText(infoError);
+                    return;
+                }
+                else {
+                    errorTextView.setText("success!");
+                    return;
+                }
+
 
 //                Application app = new Application(firstName);
 
