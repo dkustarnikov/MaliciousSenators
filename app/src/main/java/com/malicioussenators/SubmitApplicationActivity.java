@@ -37,80 +37,73 @@ import java.util.Map;
 public class SubmitApplicationActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Application studentInfo;
 
-    public Application searchStudentInfo(String StudentNum) {
-        Application studentInfo = new Application();
-        db.collection("RegistrarDataStore")
-                .whereEqualTo("studentNumber", StudentNum)
-                .get().addOnCompleteListener(task -> {
-                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                    if (documents.size() == 0){
-                        studentInfo.setFirstName("No luck");
-                        return;
-                    }
-                    else {
-                        studentInfo.setEmpty(false);
-                        studentInfo.setFirstName(documents.get(0).get("firstName").toString());
-                        studentInfo.setLastName(documents.get(0).get("lastName").toString());
-                        studentInfo.setZipCode(documents.get(0).get("zipCode").toString());
-                        studentInfo.setDoB(documents.get(0).get("DoB").toString());
-                        studentInfo.setPhoneNum(documents.get(0).get("phoneNumber").toString());
-                        studentInfo.seteMail(documents.get(0).get("eMail").toString());
-                        studentInfo.setStudentNumber(StudentNum);
-                    }
-                });
-
-        /*db.collection("RegistrarDataStore")
-                .whereEqualTo("studentNumber", StudentNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                        if (documents.size() == 0){
-                            studentInfo.setFirstName("No luck");
-                            return;
-                        }
-                        else {
-                            studentInfo.setEmpty(false);
-                            studentInfo.setFirstName(documents.get(0).get("firstName").toString());
-                            studentInfo.setLastName(documents.get(0).get("lastName").toString());
-                            studentInfo.setZipCode(documents.get(0).get("zipCode").toString());
-                            studentInfo.setDoB(documents.get(0).get("DoB").toString());
-                            studentInfo.setPhoneNum(documents.get(0).get("phoneNumber").toString());
-                            studentInfo.seteMail(documents.get(0).get("eMail").toString());
-                            studentInfo.setStudentNumber(StudentNum);
-                        }
-                    }
-                });*/
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Change the image back here
-            }
-        }, 1000); // 1 sec delay
-        return studentInfo;
-    }
-
-    Application retrieveStudentInfo(Application studentInfo) {
+    public void MainLogic1() {
+        //call the data store and wait for a response
         db.collection("RegistrarDataStore")
                 .whereEqualTo("studentNumber", studentInfo.getStudentNumber()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        //When the response comes continue with main logic
                         List<DocumentSnapshot> documents = task.getResult().getDocuments();
                         if (documents.size() == 0){
-                            studentInfo.setEmpty(true);
-                            return;
+                            errorTextView.setText("No Student Number Match - please reenter data");
                         }
                         else {
-                            studentInfo.setEmpty(false);
+                            boolean infoNoMatch = false;
+                            boolean contactNoMatch = false;
+                            String infoError = "Data field(s) do not match Registrar Data Store:";
+                            String contactError = "";
+                            if(!studentInfo.getFirstName().equals(documents.get(0).get("firstName").toString())) {
+                                infoError = infoError + " first name";
+                                infoNoMatch = true;
+                            }
+                            if(!studentInfo.getLastName().equals(documents.get(0).get("lastName").toString())) {
+                                infoError = infoError + " last name";
+                                infoNoMatch = true;
+                            }
+                            if(!studentInfo.getDoB().equals(documents.get(0).get("DoB").toString())) {
+                                infoError = infoError + " date of birth";
+                                infoNoMatch = true;
+                            }
+                            if(!studentInfo.getZipCode().equals(documents.get(0).get("zipCode").toString())) {
+                                infoError = infoError + " zip code";
+                                infoNoMatch = true;
+                            }
+                            if(!studentInfo.geteMail().equals(documents.get(0).get("eMail").toString())) {
+                                contactError = contactError + "Zip code";
+                                contactNoMatch = true;
+                            }
+                            if(!studentInfo.getPhoneNum().equals(documents.get(0).get("phoneNumber").toString())) {
+                                contactError = contactError + " phone number";
+                                contactNoMatch = true;
+                            }
+
+                            if(infoNoMatch) {
+                                infoError = infoError + "-Please reenter data";
+                                errorTextView.setText(infoError);
+                                return;
+                            }
+
                             studentInfo.setGender(documents.get(0).get("gender").toString());
                             studentInfo.setAcademicStatus(documents.get(0).get("academicStatus").toString());
-                            studentInfo.setCumulativeGPA(documents.get(0).get("cumulativeGPA").toString());
-                            studentInfo.setRecentCreditHours(documents.get(0).get("recentCreditHours").toString());
+                            studentInfo.setCumulativeGPA((double) documents.get(0).getData().get("cumulativeGPA"));
+                            studentInfo.setRecentCreditHours((int) documents.get(0).getData().get("recentCreditHours"));
+                            if(contactNoMatch) {
+                                contactError = contactError + " do not match Registrar Data Store. Update to new value(s)? (y/n)";
+                                errorTextView.setText(infoError);
+                            }
                         }
                     }
                 });
-        return studentInfo;
+    }
+
+    public void MainLogic2() {
+        if(studentInfo.getRecentCreditHours() <= 0) {
+            errorTextView.setText("Cannot apply - not currently enrolled");
+            return;
+        }
     }
 
     void storeStudentInfo(Application studentInfo, boolean Eligible, String reasons) {
@@ -170,59 +163,17 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                errorTextView.setText("Testing this");
-                String studentNumber = studentNumEditText.getText().toString();
-                String firstName = firstNameEditText.getText().toString();
-                String lastName = lastNameEditText.getText().toString();
-                String zipCode = zipCodeEditText.getText().toString();
-                String DoB = dobEditText.getText().toString();
-                String phoneNumber = phoneNumberEditText.getText().toString();
+                studentInfo = new Application();
+                errorTextView.setText("");
+                studentInfo.setFirstName(firstNameEditText.getText().toString());
+                studentInfo.setLastName(lastNameEditText.getText().toString());
+                studentInfo.setZipCode(zipCodeEditText.getText().toString());
+                studentInfo.setDoB(dobEditText.getText().toString());
+                studentInfo.setPhoneNum(phoneNumberEditText.getText().toString());
+                studentInfo.seteMail(emailEditText.getText().toString());
+                studentInfo.setStudentNumber(studentNumEditText.getText().toString());
 
-                Application studentInfo = searchStudentInfo(studentNumber);
-                if(studentInfo.isEmpty()) {
-                    errorTextView.setText("No Student Number Match - please reenter data");
-                    errorTextView.setText(studentInfo.getFirstName());
-                    return;
-                }
-
-                boolean infoNoMatch = false;
-                boolean contactNoMatch = false;
-                String infoError = "Data field(s) do not match Registrar Data Store:";
-                String contactError = "";
-                if(firstName != studentInfo.getFirstName()) {
-                    infoError = infoError + " first name";
-                    infoNoMatch = true;
-                }
-                if(lastName != studentInfo.getLastName()) {
-                    infoError = infoError + " last name";
-                    infoNoMatch = true;
-                }
-                if(DoB != studentInfo.getDoB()) {
-                    infoError = infoError + " date of birth";
-                    infoNoMatch = true;
-                }
-                if(lastName != studentInfo.getLastName()) {
-                    infoError = infoError + " last name";
-                    infoNoMatch = true;
-                }
-                if(zipCode != studentInfo.getZipCode()) {
-                    contactError = contactError + "Zip code";
-                    contactNoMatch = true;
-                }
-                if(phoneNumber != studentInfo.getPhoneNum()) {
-                    contactError = contactError + " phone number";
-                    contactNoMatch = true;
-                }
-
-                if(infoNoMatch) {
-                    infoError = infoError + "-Please reenter data";
-                    errorTextView.setText(infoError);
-                    return;
-                }
-                else {
-                    errorTextView.setText("success!");
-                    return;
-                }
+                MainLogic1();
 
 
 //                Application app = new Application(firstName);

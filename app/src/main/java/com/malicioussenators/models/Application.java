@@ -1,7 +1,6 @@
 package com.malicioussenators.models;
 
 public class Application {
-    boolean empty;
     String firstName;
     String lastName;
     String studentNumber;
@@ -11,11 +10,10 @@ public class Application {
     String eMail;
     String gender;
     String academicStatus;
-    String cumulativeGPA;
-    String recentCreditHours;
+    double cumulativeGPA;
+    int recentCreditHours;
 
     public Application() {
-        empty = true;
         firstName = "";
         lastName = "";
         studentNumber = "";
@@ -25,8 +23,8 @@ public class Application {
         eMail = "";
         gender = "";
         academicStatus = "";
-        cumulativeGPA = "";
-        recentCreditHours = "";
+        cumulativeGPA = 0.0;
+        recentCreditHours = 0;
     }
 
     public void setLastName(String lastName) {
@@ -53,14 +51,6 @@ public class Application {
         this.zipCode = zipCode;
     }
 
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -73,11 +63,11 @@ public class Application {
         this.academicStatus = academicStatus;
     }
 
-    public void setCumulativeGPA(String cumulativeGPA) {
+    public void setCumulativeGPA(double cumulativeGPA) {
         this.cumulativeGPA = cumulativeGPA;
     }
 
-    public void setRecentCreditHours(String recentCreditHours) {
+    public void setRecentCreditHours(int recentCreditHours) {
         this.recentCreditHours = recentCreditHours;
     }
 
@@ -117,11 +107,11 @@ public class Application {
         return academicStatus;
     }
 
-    public String getCumulativeGPA() {
+    public double getCumulativeGPA() {
         return cumulativeGPA;
     }
 
-    public String getRecentCreditHours() {
+    public int getRecentCreditHours() {
         return recentCreditHours;
     }
 }
