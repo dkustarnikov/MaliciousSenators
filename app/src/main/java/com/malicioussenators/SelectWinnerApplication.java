@@ -1,14 +1,144 @@
 package com.malicioussenators;
 
-import androidx.appcompat.app.AppCompatActivity;
+import static com.malicioussenators.CONSTANTS.APPLICANTS_DATA_STORE;
+import static com.malicioussenators.CONSTANTS.REGISTRAR_DATA_STORE;
 
 import android.os.Bundle;
+import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.malicioussenators.models.Application;
+import com.malicioussenators.models.RegistrarData;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class SelectWinnerApplication extends AppCompatActivity {
+
+    Button readyButton, steadyButton, pickWinnerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_winner_application);
+
+        readyButton = findViewById(R.id.readyButton);
+        steadyButton = findViewById(R.id.steadyButton);
+        pickWinnerButton = findViewById(R.id.pickWinnerButton);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        HashMap<String, Application> applicantsDataStoreMap = new HashMap<>();
+        HashMap<String, RegistrarData> tempRegistrarsDataStoreMap = new HashMap<>();
+        HashMap<String, RegistrarData> registrarsDataStoreMap = new HashMap<>();
+
+
+        readyButton.setOnClickListener(view -> {
+            db.collection(APPLICANTS_DATA_STORE)
+                    .get().addOnCompleteListener(task -> {
+                List<DocumentSnapshot> applicationDocuments = task.getResult().getDocuments();
+                for (DocumentSnapshot doc : applicationDocuments) {
+                    applicantsDataStoreMap.put(doc.get("studentNumber").toString(), doc.toObject(Application.class));
+                }
+                steadyButton.setEnabled(true);
+                readyButton.setEnabled(false);
+            });
+        });
+
+        steadyButton.setOnClickListener(view -> {
+            db.collection(REGISTRAR_DATA_STORE)
+                    .get().addOnCompleteListener(task -> {
+                List<DocumentSnapshot> applicationDocuments = task.getResult().getDocuments();
+                for (DocumentSnapshot doc : applicationDocuments) {
+                    tempRegistrarsDataStoreMap.put(doc.get("studentNumber").toString(), doc.toObject(RegistrarData.class));
+                }
+                steadyButton.setEnabled(false);
+                pickWinnerButton.setEnabled(true);
+            });
+        });
+
+        pickWinnerButton.setOnClickListener(view -> {
+            for (Map.Entry entry : tempRegistrarsDataStoreMap.entrySet()) {
+                String studentNumber = entry.getKey().toString();
+                if (applicantsDataStoreMap.containsKey(studentNumber)) {
+                    registrarsDataStoreMap.put(studentNumber, (RegistrarData) entry.getValue());
+                }
+            }
+
+            //At this point you have all the data
+//            Logic
+
+
+        });
+
+
+        //Ready
+        //Steady
+        //Pick Winner
+
+
+//        db.collection(APPLICANTS_DATA_STORE)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    List<DocumentSnapshot> applicationDocuments = task.getResult().getDocuments();
+//                    for (DocumentSnapshot doc : applicationDocuments) {
+//                        applicantsDataStoreMap.put(doc.get("studentNumber").toString(), doc.toObject(Application.class));
+//                        //At this point we have the studentNumber
+//                        String studentNumber = doc.get("studentNumber").toString();
+//                        //So we just pull a user with that studentNumber from Registrar and store it
+//
+//                        db.collection(REGISTRAR_DATA_STORE)
+//                                .whereEqualTo("studentNumber", studentNumber)
+//                                .get().addOnCompleteListener(task12 -> {
+//                            List<DocumentSnapshot> registrarsDocuments = task12.getResult().getDocuments();
+//                            if (!registrarsDocuments.isEmpty()) {
+//                                tempRegistrarsDataStoreMap.put(studentNumber, registrarsDocuments.get(0).toObject(RegistrarData.class));
+//                            }
+//                            System.out.println(1);
+//                        });
+//                        //At this point we have all applicants
+//                        //                      all applicants' registrar data
+//                    }
+//                });
+//
+//
+//        System.out.println("The final result");
+//
+//
+//        System.out.println(1);
+
+
+/*
+        //Get all registrar entries ordered by gpa
+
+        //Get all applicants entries
+
+        HashMap<String, Object> Applicants = db.collection().orderBy("gpa")
+
+        YourGuy = new Guy();
+        HashMap<String, Object> Applicants -> String is the studentNumber, object is all information;
+        List<Object> registrarEntries;
+
+        for (entry : registrarEntries) {
+            if (Applicants.get(entry.studentNumber)) {
+                YourGuy = entry; //YourGuy is the person with the higherst gpa in applicants
+            }
+        }
+        for (entry in registrarEntries) {
+            for (applicant in Applicants) {
+                if (entry.studentNumber == applicant.studentNumber) {
+                    YourGuys = entry or applicant (whatever you need to find)
+                    break;
+                }
+            }
+        }
+*/
+
+
     }
 }
