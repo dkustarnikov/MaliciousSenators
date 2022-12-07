@@ -31,7 +31,6 @@ public class DisplayModuleActivity extends AppCompatActivity {
 
     Button extractAllDataButton, displayApplicantsButton;
     EditText studentNumberEditText;
-    TextView displayApplicantsTextView;
     LinearLayout linearLayout;
 
     @Override
@@ -57,6 +56,8 @@ public class DisplayModuleActivity extends AppCompatActivity {
                 String studentNum = studentNumberEditText.getText().toString();
                 Map<String, Object> tempMap = new HashMap<>();
                 if (!studentNum.isEmpty()) {
+
+
                     db.collection(APPLICANTS_DATA_STORE)
                             .whereEqualTo("studentNumber", studentNum)
                             .get().addOnCompleteListener(task -> {
