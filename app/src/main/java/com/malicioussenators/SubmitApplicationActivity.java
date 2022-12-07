@@ -1,14 +1,19 @@
 package com.malicioussenators;
 
+import static com.malicioussenators.CONSTANTS.APPLICANTS_DATA_STORE;
+import static com.malicioussenators.CONSTANTS.REGISTRAR_DATA_STORE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +29,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.malicioussenators.models.Application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,26 +38,35 @@ public class SubmitApplicationActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    static Application convertDocumentToApplication(DocumentSnapshot doc) {
-        Application app = new Application();
-
-        app.setFirstName(doc.get("firstName").toString());
-        app.setStudentNumber(doc.get("studentNumber").toString());
-
-        return app;
-    }
-
     public Application searchStudentInfo(String StudentNum) {
         Application studentInfo = new Application();
         db.collection("RegistrarDataStore")
+                .whereEqualTo("studentNumber", StudentNum)
+                .get().addOnCompleteListener(task -> {
+                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                    if (documents.size() == 0){
+                        studentInfo.setFirstName("No luck");
+                        return;
+                    }
+                    else {
+                        studentInfo.setEmpty(false);
+                        studentInfo.setFirstName(documents.get(0).get("firstName").toString());
+                        studentInfo.setLastName(documents.get(0).get("lastName").toString());
+                        studentInfo.setZipCode(documents.get(0).get("zipCode").toString());
+                        studentInfo.setDoB(documents.get(0).get("DoB").toString());
+                        studentInfo.setPhoneNum(documents.get(0).get("phoneNumber").toString());
+                        studentInfo.seteMail(documents.get(0).get("eMail").toString());
+                        studentInfo.setStudentNumber(StudentNum);
+                    }
+                });
+
+        /*db.collection("RegistrarDataStore")
                 .whereEqualTo("studentNumber", StudentNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                        if (documents.size() > 1) {
-
-                        }
-                        else if (documents.size() == 0){
+                        if (documents.size() == 0){
+                            studentInfo.setFirstName("No luck");
                             return;
                         }
                         else {
@@ -65,7 +80,14 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                             studentInfo.setStudentNumber(StudentNum);
                         }
                     }
-                });
+                });*/
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Change the image back here
+            }
+        }, 1000); // 1 sec delay
         return studentInfo;
     }
 
@@ -143,10 +165,12 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         submitButton = findViewById(R.id.submitApplicationButton);
 
         errorTextView = findViewById(R.id.errorTextView);
+        errorTextView.setText("");
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                errorTextView.setText("Testing this");
                 String studentNumber = studentNumEditText.getText().toString();
                 String firstName = firstNameEditText.getText().toString();
                 String lastName = lastNameEditText.getText().toString();
@@ -156,6 +180,8 @@ public class SubmitApplicationActivity extends AppCompatActivity {
 
                 Application studentInfo = searchStudentInfo(studentNumber);
                 if(studentInfo.isEmpty()) {
+                    errorTextView.setText("No Student Number Match - please reenter data");
+                    errorTextView.setText(studentInfo.getFirstName());
                     return;
                 }
 
