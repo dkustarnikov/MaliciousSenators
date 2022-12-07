@@ -9,6 +9,10 @@ public class Application {
     String DoB;
     String phoneNum;
     String eMail;
+    String gender;
+    String academicStatus;
+    String cumulativeGPA;
+    String recentCreditHours;
 
     public Application() {
         empty = true;
@@ -19,6 +23,10 @@ public class Application {
         DoB = "";
         phoneNum = "";
         eMail = "";
+        gender = "";
+        academicStatus = "";
+        cumulativeGPA = "";
+        recentCreditHours = "";
     }
 
     public void setLastName(String lastName) {
@@ -55,5 +63,65 @@ public class Application {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setAcademicStatus(String academicStatus) {
+        this.academicStatus = academicStatus;
+    }
+
+    public void setCumulativeGPA(String cumulativeGPA) {
+        this.cumulativeGPA = cumulativeGPA;
+    }
+
+    public void setRecentCreditHours(String recentCreditHours) {
+        this.recentCreditHours = recentCreditHours;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getStudentNumber() {
+        return studentNumber;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public String getDoB() {
+        return DoB;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getAcademicStatus() {
+        return academicStatus;
+    }
+
+    public String getCumulativeGPA() {
+        return cumulativeGPA;
+    }
+
+    public String getRecentCreditHours() {
+        return recentCreditHours;
     }
 }

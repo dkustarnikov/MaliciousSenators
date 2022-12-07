@@ -12,16 +12,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.malicioussenators.models.Application;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SubmitApplicationActivity extends AppCompatActivity {
 
@@ -37,7 +42,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
     }
 
     public Application searchStudentInfo(String StudentNum) {
-        Application application = new Application();
+        Application studentInfo = new Application();
         db.collection("RegistrarDataStore")
                 .whereEqualTo("studentNumber", StudentNum).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -50,34 +55,72 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                             return;
                         }
                         else {
-                            application.setEmpty(false);
-                            application.setFirstName(documents.get(0).get("firstName").toString());
-                            application.setLastName(documents.get(0).get("lastName").toString());
-                            application.setZipCode(documents.get(0).get("zipCode").toString());
-                            application.setDoB(documents.get(0).get("DoB").toString());
-                            application.setPhoneNum(documents.get(0).get("phoneNumber").toString());
-                            application.seteMail(documents.get(0).get("eMail").toString());
-                            application.setStudentNumber(StudentNum);
+                            studentInfo.setEmpty(false);
+                            studentInfo.setFirstName(documents.get(0).get("firstName").toString());
+                            studentInfo.setLastName(documents.get(0).get("lastName").toString());
+                            studentInfo.setZipCode(documents.get(0).get("zipCode").toString());
+                            studentInfo.setDoB(documents.get(0).get("DoB").toString());
+                            studentInfo.setPhoneNum(documents.get(0).get("phoneNumber").toString());
+                            studentInfo.seteMail(documents.get(0).get("eMail").toString());
+                            studentInfo.setStudentNumber(StudentNum);
                         }
                     }
                 });
-        return application;
+        return studentInfo;
     }
 
-    Application getApplicationById(String id) {
-        final Application[] app = new Application[1];
+    Application retrieveStudentInfo(Application studentInfo) {
         db.collection("RegistrarDataStore")
-                .whereEqualTo("studentNumber", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .whereEqualTo("studentNumber", studentInfo.getStudentNumber()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                        convertDocumentToApplication(documents.get(0));
-//                        app[0] = task.getResult().getDocuments().get(0).convertDocumentToApplication(Application.class);
+                        if (documents.size() == 0){
+                            studentInfo.setEmpty(true);
+                            return;
+                        }
+                        else {
+                            studentInfo.setEmpty(false);
+                            studentInfo.setGender(documents.get(0).get("gender").toString());
+                            studentInfo.setAcademicStatus(documents.get(0).get("academicStatus").toString());
+                            studentInfo.setCumulativeGPA(documents.get(0).get("cumulativeGPA").toString());
+                            studentInfo.setRecentCreditHours(documents.get(0).get("recentCreditHours").toString());
+                        }
                     }
                 });
+        return studentInfo;
+    }
 
+    void storeStudentInfo(Application studentInfo, boolean Eligible, String reasons) {
+        Map<String, Object> student = new HashMap<>();
+        student.put("firstName", studentInfo.getFirstName());
+        student.put("lastName", studentInfo.getLastName());
+        student.put("studentNumber", studentInfo.getStudentNumber());
+        student.put("zipCode", studentInfo.getZipCode());
+        student.put("Dob", studentInfo.getDoB());
+        student.put("phoneNum", studentInfo.getPhoneNum());
+        student.put("eMail", studentInfo.geteMail());
+        student.put("gender", studentInfo.getGender());
+        student.put("academicStatus", studentInfo.getAcademicStatus());
+        student.put("cumulativeGPA", studentInfo.getCumulativeGPA());
+        student.put("recentCreditHours", studentInfo.getRecentCreditHours());
+        student.put("eligibility", Eligible);
+        student.put("reasons", reasons);
 
-        return app[0];
+        db.collection("ApplicantsDataStore")
+                .add(student)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("Tag","DocumentSnapshot added with ID");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Tag","Error adding document", e);
+                    }
+                });
     }
 
     EditText firstNameEditText, lastNameEditText, zipCodeEditText, dobEditText, emailEditText, phoneNumberEditText, studentNumEditText;
@@ -104,12 +147,41 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String studentNumber = studentNumEditText.getText().toString();
                 String firstName = firstNameEditText.getText().toString();
+                String lastName = lastNameEditText.getText().toString();
+                String zipCode = zipCodeEditText.getText().toString();
+                String DoB = dobEditText.getText().toString();
+                String PhoneNumber = phoneNumberEditText.getText().toString();
+
+                Application studentInfo = searchStudentInfo(studentNumber);
+                if(studentInfo.isEmpty()) {
+                    return;
+                }
+
+                boolean infoNoMatch = false;
+                boolean contactNoMatch = false;
+                String infoError = "Data field(s) do not match Registrar Data Store:";
+                String contactError = "";
+                if(firstName != studentInfo.getFirstName()) {
+                    infoError = infoError + " first name";
+                    infoNoMatch = true;
+                }
+                if(lastName != studentInfo.getLastName()) {
+                    infoError = infoError + " last name";
+                    infoNoMatch = true;
+                }
+                if(DoB != studentInfo.getDoB()) {
+                    infoError = infoError + " date of birth";
+                    infoNoMatch = true;
+                }
+                if(lastName != studentInfo.getLastName()) {
+                    infoError = infoError + " last name";
+                    infoNoMatch = true;
+                }
 
                 errorTextView.setTextColor(Color.RED);
                 errorTextView.setText(firstName);
-
-                getApplicationById("12");
 
 //                Application app = new Application(firstName);
 
