@@ -7,6 +7,16 @@
     tools:context=".SubmitApplicationActivity">
 
     <EditText
+        android:id="@+id/contactErrorEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="284dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText"
+        tools:layout_editor_absoluteX="95dp" />
+
+    <EditText
         android:id="@+id/firstNameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -154,7 +164,25 @@
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton" />
+        app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton"
+        app:layout_constraintVertical_bias="0.167" />
+
+    <Button
+        android:id="@+id/contactButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        tools:layout_editor_absoluteX="156dp"
+        tools:layout_editor_absoluteY="653dp" />
+
+    <TextView
+        android:id="@+id/YNTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Error Response"
+        tools:layout_editor_absoluteX="307dp"
+        tools:layout_editor_absoluteY="620dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

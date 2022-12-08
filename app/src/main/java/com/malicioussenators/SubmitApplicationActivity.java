@@ -41,6 +41,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Application studentInfo;
+    DocumentReference studentDoc;
 
     public void MainLogic1() {
         //call the data store and wait for a response
@@ -54,59 +55,74 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                             errorTextView.setText("No Student Number Match - please reenter data");
                             return;
                         }
-                        else {
-                            boolean infoNoMatch = false;
-                            boolean contactNoMatch = false;
-                            String infoError = "Data field(s) do not match Registrar Data Store:";
-                            String contactError = "";
-                            if(!studentInfo.getFirstName().equals(documents.get(0).get("firstName").toString())) {
-                                infoError = infoError + " first name";
-                                infoNoMatch = true;
-                            }
-                            if(!studentInfo.getLastName().equals(documents.get(0).get("lastName").toString())) {
-                                infoError = infoError + " last name";
-                                infoNoMatch = true;
-                            }
-                            if(!studentInfo.getDoB().equals(documents.get(0).get("DoB").toString())) {
-                                infoError = infoError + " date of birth";
-                                infoNoMatch = true;
-                            }
-                            if(!studentInfo.getZipCode().equals(documents.get(0).get("zipCode").toString())) {
-                                infoError = infoError + " zip code";
-                                infoNoMatch = true;
-                            }
-                            if(!studentInfo.geteMail().equals(documents.get(0).get("eMail").toString())) {
-                                contactError = contactError + "Zip code";
-                                contactNoMatch = true;
-                            }
-                            if(!studentInfo.getPhoneNum().equals(documents.get(0).get("phoneNumber").toString())) {
-                                contactError = contactError + " phone number";
-                                contactNoMatch = true;
-                            }
-
-                            if(infoNoMatch) {
-                                infoError = infoError + "-Please reenter data";
-                                errorTextView.setText(infoError);
-                                return;
-                            }
-
-                            studentInfo.setGender(documents.get(0).get("gender").toString());
-                            studentInfo.setAcademicStatus(documents.get(0).get("academicStatus").toString());
-                            studentInfo.setCumulativeGPA((double) documents.get(0).getData().get("cumulativeGPA"));
-                            studentInfo.setRecentCreditHours((int) documents.get(0).getData().get("recentCreditHours"));
-                            if(contactNoMatch) {
-                                contactError = contactError + " do not match Registrar Data Store. Update to new value(s)? (y/n)";
-                                errorTextView.setText(infoError);
-                            }
-                            MainLogic2();
+                        boolean infoNoMatch = false;
+                        boolean contactNoMatch = false;
+                        String infoError = "Data field(s) do not match Registrar Data Store:";
+                        String contactError = "";
+                        if(!studentInfo.getFirstName().equals(documents.get(0).get("firstName").toString())) {
+                            infoError = infoError + " first name";
+                            infoNoMatch = true;
                         }
+                        if(!studentInfo.getLastName().equals(documents.get(0).get("lastName").toString())) {
+                            infoError = infoError + " last name";
+                            infoNoMatch = true;
+                        }
+                        if(!studentInfo.getDoB().equals(documents.get(0).get("DoB").toString())) {
+                            infoError = infoError + " date of birth";
+                            infoNoMatch = true;
+                        }
+                        if(!studentInfo.getZipCode().equals(documents.get(0).get("zipCode").toString())) {
+                            infoError = infoError + " zip code";
+                            infoNoMatch = true;
+                        }
+                        if(!studentInfo.geteMail().equals(documents.get(0).get("eMail").toString())) {
+                            contactError = contactError + "Zip code";
+                            contactNoMatch = true;
+                        }
+                        if(!studentInfo.getPhoneNum().equals(documents.get(0).get("phoneNumber").toString())) {
+                            contactError = contactError + " phone number";
+                            contactNoMatch = true;
+                        }
+
+                        if(infoNoMatch) {
+                            infoError = infoError + " - Please reenter data";
+                            errorTextView.setText(infoError);
+                            return;
+                        }
+
+                        studentInfo.setGender(documents.get(0).get("gender").toString());
+                        studentInfo.setAcademicStatus(documents.get(0).get("academicStatus").toString());
+                        double GPA = (double) documents.get(0).getData().get("cumulativeGPA");
+                        long credit = (long) documents.get(0).getData().get("recentCreditHours");
+                        studentInfo.setCumulativeGPA(GPA);
+                        studentInfo.setRecentCreditHours(credit);
+                        if(contactNoMatch) {
+                            contactError = contactError + " do not match Registrar Data Store. Update to new value(s)? (y/n)";
+                            errorTextView.setText(contactError);
+                            studentDoc = documents.get(0).getReference();
+                            //enable user error response
+                            contactButton.setEnabled(true);
+                            contactErrorEditText.setEnabled(true);
+                            //disable normal user response
+                            firstNameEditText.setEnabled(false);
+                            lastNameEditText.setEnabled(false);
+                            zipCodeEditText.setEnabled(false);
+                            dobEditText.setEnabled(false);
+                            emailEditText.setEnabled(false);
+                            phoneNumberEditText.setEnabled(false);
+                            studentNumEditText.setEnabled(false);
+                            contactErrorEditText.setEnabled(false);
+                            submitButton.setEnabled(false);
+                            return;
+                        }
+                        MainLogic2();
                     }
                 });
     }
 
     public void MainLogic2() {
         if(studentInfo.getRecentCreditHours() <= 0) {
-            errorTextView.setText("Cannot apply - not currently enrolled");
+            errorTextView.setText("Cannot apply - not enrolled in latest semester");
             return;
         }
 
@@ -123,15 +139,14 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         //calculate applicant's age
         String[] dob = studentInfo.getDoB().split("-");
         LocalDate currentDate = LocalDate.now();
-        int diffYear = currentDate.getYear() - Integer.parseInt(dob[-1]);
-        int diffMonth = currentDate.getMonthValue() - Integer.parseInt(dob[0]);
-        int diffDay = currentDate.getDayOfMonth() - Integer.parseInt(dob[1]);
-        int age = ((diffYear * 365) + (diffMonth * 31) + diffDay)/365;
+        long diffYear = currentDate.getYear() - Long.parseLong(dob[2]);
+        long diffMonth = currentDate.getMonthValue() - Long.parseLong(dob[0]);
+        long diffDay = currentDate.getDayOfMonth() - Long.parseLong(dob[1]);
+        long age = ((diffYear * 365) + (diffMonth * 31) + diffDay)/365;
         if(age < 23) {
             eligible = false;
             reasons = reasons + " age";
         }
-
         //Store in applicants data store
         Map<String, Object> student = new HashMap<>();
         student.put("firstName", studentInfo.getFirstName());
@@ -153,20 +168,20 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Tag","DocumentSnapshot added with ID");
+                        errorTextView.setText("Your application has been submitted");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Tag","Error adding document", e);
+                        errorTextView.setText("Something went wrong when sending your application to the data store");
                     }
                 });
     }
 
-    EditText firstNameEditText, lastNameEditText, zipCodeEditText, dobEditText, emailEditText, phoneNumberEditText, studentNumEditText;
+    EditText firstNameEditText, lastNameEditText, zipCodeEditText, dobEditText, emailEditText, phoneNumberEditText, studentNumEditText, contactErrorEditText;
     TextView errorTextView;
-    Button submitButton;
+    Button submitButton, contactButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,16 +195,20 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText);
         studentNumEditText = findViewById(R.id.studentNumberEditText);
+        contactErrorEditText = findViewById(R.id.contactErrorEditText);
 
         submitButton = findViewById(R.id.submitApplicationButton);
+        contactButton = findViewById(R.id.contactButton);
 
         errorTextView = findViewById(R.id.errorTextView);
+        studentInfo = new Application();
         errorTextView.setText("");
+        contactButton.setEnabled(false);
+        contactErrorEditText.setEnabled(false);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                studentInfo = new Application();
                 errorTextView.setText("");
                 studentInfo.setFirstName(firstNameEditText.getText().toString());
                 studentInfo.setLastName(lastNameEditText.getText().toString());
@@ -200,39 +219,49 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                 studentInfo.setStudentNumber(studentNumEditText.getText().toString());
 
                 MainLogic1();
+            }
+        });
 
-
-//                Application app = new Application(firstName);
-
-
-
-//                db.collection("RegistrarDataStore").addTask<QuerySnapshot> snapshotTask= (app);
-
-//                db.collection("RegistrarDataStore")
-//                        .get()
-//                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                if (task.isSuccessful()) {
-//                                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                                        Log.d("TAG", document.getId() + " => " + document.getData());
-//                                        Log.d("firebase", String.valueOf(task.getResult().getDocuments()));
-//
-//                                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
-//                                        String firstNameFromDB = (String) documents.get(0).get("firstName");
-//
-//                                        for (DocumentSnapshot doc : documents) {
-//                                            Log.e("TAG", doc.get("born").toString());
-//                                            Log.e("TAG", doc.getData().toString());
-//                                        }
-//
-//                                        Log.d("1", "1");
-//                                    }
-//                                } else {
-//                                    Log.w("TAG", "Error getting documents.", task.getException());
-//                                }
-//                            }
-//                        });
+        contactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorTextView.setText("");
+                String Answer = contactErrorEditText.getText().toString();
+                if(Answer.equals("Y") || Answer.equals("y")) {
+                    studentDoc.update("eMail", studentInfo.geteMail());
+                    studentDoc.update("phoneNumber", studentInfo.getPhoneNum());
+                    //disable user error response
+                    contactButton.setEnabled(false);
+                    contactErrorEditText.setEnabled(false);
+                    //enable normal user response
+                    firstNameEditText.setEnabled(true);
+                    lastNameEditText.setEnabled(true);
+                    zipCodeEditText.setEnabled(true);
+                    dobEditText.setEnabled(true);
+                    emailEditText.setEnabled(true);
+                    phoneNumberEditText.setEnabled(true);
+                    studentNumEditText.setEnabled(true);
+                    contactErrorEditText.setEnabled(true);
+                    submitButton.setEnabled(true);
+                    MainLogic2();
+                } else if (Answer.equals("N") || Answer.equals("n")) {
+                    errorTextView.setText("Please reenter data");
+                    //disable user error response
+                    contactButton.setEnabled(false);
+                    contactErrorEditText.setEnabled(false);
+                    //enable normal user response
+                    firstNameEditText.setEnabled(true);
+                    lastNameEditText.setEnabled(true);
+                    zipCodeEditText.setEnabled(true);
+                    dobEditText.setEnabled(true);
+                    emailEditText.setEnabled(true);
+                    phoneNumberEditText.setEnabled(true);
+                    studentNumEditText.setEnabled(true);
+                    contactErrorEditText.setEnabled(true);
+                    submitButton.setEnabled(true);
+                } else {
+                    errorTextView.setText("Invalid response. Update contact information to new value(s) (y/n)?");
+                }
             }
         });
 

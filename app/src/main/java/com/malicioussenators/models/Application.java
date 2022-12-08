@@ -11,7 +11,7 @@ public class Application {
     String gender;
     String academicStatus;
     double cumulativeGPA;
-    int recentCreditHours;
+    long recentCreditHours;
 
     public Application() {
         firstName = "";
@@ -67,7 +67,7 @@ public class Application {
         this.cumulativeGPA = cumulativeGPA;
     }
 
-    public void setRecentCreditHours(int recentCreditHours) {
+    public void setRecentCreditHours(long recentCreditHours) {
         this.recentCreditHours = recentCreditHours;
     }
 
@@ -111,7 +111,7 @@ public class Application {
         return cumulativeGPA;
     }
 
-    public int getRecentCreditHours() {
+    public long getRecentCreditHours() {
         return recentCreditHours;
     }
 }
