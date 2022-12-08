@@ -91,6 +91,17 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     }
                 }
             });
+
+            double highestCumulativeGPA = dataList2.get(0).getCumulativeGPA();
+            tempRegistrarsDataStoreMap.clear();
+            for (Map.Entry entry : registrarsDataStoreMap.entrySet()) {
+                String studentNumber = entry.getKey().toString();
+                RegistrarData s1 = (RegistrarData) entry.getValue();
+                if (s1.getCumulativeGPA() == highestCumulativeGPA) {
+                    tempRegistrarsDataStoreMap.put(studentNumber, s1);
+                }
+            }
+
             System.out.println(1);
 
         });
