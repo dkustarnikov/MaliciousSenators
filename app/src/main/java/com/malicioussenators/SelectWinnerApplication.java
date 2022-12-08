@@ -13,9 +13,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.malicioussenators.models.Application;
 import com.malicioussenators.models.RegistrarData;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class SelectWinnerApplication extends AppCompatActivity {
@@ -72,7 +76,33 @@ public class SelectWinnerApplication extends AppCompatActivity {
 
             //At this point you have all the data
 //            Logic
+            Collection<RegistrarData> dataList = registrarsDataStoreMap.values();
+            List<RegistrarData> dataList2 = dataList.stream().collect(Collectors.toList());
+            Collections.sort(dataList2, new Comparator<RegistrarData>(){
+                public int compare(RegistrarData s1, RegistrarData s2) {
+                    if(s1.getCumulativeGPA() < s2.getCumulativeGPA()) {
+                        return 1;
+                    }
+                    else if(s1.getCumulativeGPA() > s2.getCumulativeGPA()) {
+                        return -1;
+                    }
+                    else {
+                        return 0;
+                    }
+                }
+            });
 
+            double highestCumulativeGPA = dataList2.get(0).getCumulativeGPA();
+            tempRegistrarsDataStoreMap.clear();
+            for (Map.Entry entry : registrarsDataStoreMap.entrySet()) {
+                String studentNumber = entry.getKey().toString();
+                RegistrarData s1 = (RegistrarData) entry.getValue();
+                if (s1.getCumulativeGPA() == highestCumulativeGPA) {
+                    tempRegistrarsDataStoreMap.put(studentNumber, s1);
+                }
+            }
+
+            System.out.println(1);
 
         });
 
