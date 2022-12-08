@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
@@ -38,7 +39,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         HashMap<String, Application> applicantsDataStoreMap = new HashMap<>();
-        HashMap<String, RegistrarData> tempRegistrarsDataStoreMap = new HashMap<>();
+        AtomicReference<HashMap<String, RegistrarData>> tempRegistrarsDataStoreMap = new AtomicReference<>(new HashMap<>());
         HashMap<String, RegistrarData> registrarsDataStoreMap = new HashMap<>();
 
 
@@ -59,7 +60,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     .get().addOnCompleteListener(task -> {
                 List<DocumentSnapshot> applicationDocuments = task.getResult().getDocuments();
                 for (DocumentSnapshot doc : applicationDocuments) {
-                    tempRegistrarsDataStoreMap.put(doc.get("studentNumber").toString(), doc.toObject(RegistrarData.class));
+                    tempRegistrarsDataStoreMap.get().put(doc.get("studentNumber").toString(), doc.toObject(RegistrarData.class));
                 }
                 steadyButton.setEnabled(false);
                 pickWinnerButton.setEnabled(true);
@@ -67,7 +68,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
         });
 
         pickWinnerButton.setOnClickListener(view -> {
-            for (Map.Entry entry : tempRegistrarsDataStoreMap.entrySet()) {
+            for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
                 String studentNumber = entry.getKey().toString();
                 if (applicantsDataStoreMap.containsKey(studentNumber)) {
                     registrarsDataStoreMap.put(studentNumber, (RegistrarData) entry.getValue());
@@ -93,15 +94,105 @@ public class SelectWinnerApplication extends AppCompatActivity {
             });
 
             double highestCumulativeGPA = dataList2.get(0).getCumulativeGPA();
-            tempRegistrarsDataStoreMap.clear();
+            tempRegistrarsDataStoreMap.get().clear();
             for (Map.Entry entry : registrarsDataStoreMap.entrySet()) {
                 String studentNumber = entry.getKey().toString();
                 RegistrarData s1 = (RegistrarData) entry.getValue();
                 if (s1.getCumulativeGPA() == highestCumulativeGPA) {
-                    tempRegistrarsDataStoreMap.put(studentNumber, s1);
+                    tempRegistrarsDataStoreMap.get().put(studentNumber, s1);
                 }
             }
+            dataList.clear();
+            dataList2.clear();
+            //handle tie in cumulativeGPA
+            if(tempRegistrarsDataStoreMap.get().size() != 1) {
+                dataList = tempRegistrarsDataStoreMap.get().values();
+                dataList2 = dataList.stream().collect(Collectors.toList());
+                Collections.sort(dataList2, new Comparator<RegistrarData>(){
+                    public int compare(RegistrarData s1, RegistrarData s2) {
+                        if(s1.getCurrentSemesterGPA() < s2.getCurrentSemesterGPA()) {
+                            return 1;
+                        }
+                        else if(s1.getCurrentSemesterGPA() > s2.getCurrentSemesterGPA()) {
+                            return -1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    }
+                });
 
+                double highestCurrentSemesterGPA = dataList2.get(0).getCurrentSemesterGPA();
+                registrarsDataStoreMap.clear();
+                for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
+                    String studentNumber = entry.getKey().toString();
+                    RegistrarData s1 = (RegistrarData) entry.getValue();
+                    if (s1.getCurrentSemesterGPA() == highestCurrentSemesterGPA) {
+                        registrarsDataStoreMap.put(studentNumber, s1);
+                    }
+                }
+            }
+            else {
+                //winner selected based on highest cumulativeGPA
+                //store winner in awarded data store
+                //create emails
+            }
+            //handle tie in currentsemesterGPA
+            if(registrarsDataStoreMap.size() != 1) {
+                tempRegistrarsDataStoreMap.get().clear();
+                for (Map.Entry entry : registrarsDataStoreMap.entrySet()) {
+                    String studentNumber = entry.getKey().toString();
+                    RegistrarData s1 = (RegistrarData) entry.getValue();
+                    if (s1.getAcademicStatus().equals("Junior")) {
+                        tempRegistrarsDataStoreMap.get().put(studentNumber, s1);
+                    }
+                }
+                if (tempRegistrarsDataStoreMap.get().size() == 0) { //None are juniors
+                    for (Map.Entry entry : registrarsDataStoreMap.entrySet()) {
+                        String studentNumber = entry.getKey().toString();
+                        RegistrarData s1 = (RegistrarData) entry.getValue();
+                        tempRegistrarsDataStoreMap.get().put(studentNumber, s1);
+                    }
+                }
+            }
+            else {
+                //winner selected based on highest currentSemesterGPA
+                //store winner in awarded data store
+                //create emails
+            }
+            System.out.println(1);
+            //handle tie in academicStatus
+            if(tempRegistrarsDataStoreMap.get().size() != 1) {
+                registrarsDataStoreMap.clear();
+                for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
+                    String studentNumber = entry.getKey().toString();
+                    RegistrarData s1 = (RegistrarData) entry.getValue();
+                    if (s1.getGender().equals("Female")) {
+                        registrarsDataStoreMap.put(studentNumber, s1);
+                    }
+                }
+                if (registrarsDataStoreMap.size() == 0) { //none are female
+                    for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
+                        String studentNumber = entry.getKey().toString();
+                        RegistrarData s1 = (RegistrarData) entry.getValue();
+                        registrarsDataStoreMap.put(studentNumber, s1);
+                    }
+                }
+            }
+            else {
+                //winner selected based on being a Junior
+                //store winner in awarded data store
+                //create emails
+            }
+            //handle tie in gender
+            if(registrarsDataStoreMap.size() != 1) {
+                //voting system
+            }
+            else {
+                //winner selected based on being a female
+                //store winner in awarded data store
+                //create emails
+            }
             System.out.println(1);
 
         });
