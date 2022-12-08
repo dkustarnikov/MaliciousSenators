@@ -29,6 +29,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.malicioussenators.models.Application;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -49,6 +52,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                         List<DocumentSnapshot> documents = task.getResult().getDocuments();
                         if (documents.size() == 0){
                             errorTextView.setText("No Student Number Match - please reenter data");
+                            return;
                         }
                         else {
                             boolean infoNoMatch = false;
@@ -94,6 +98,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                                 contactError = contactError + " do not match Registrar Data Store. Update to new value(s)? (y/n)";
                                 errorTextView.setText(infoError);
                             }
+                            MainLogic2();
                         }
                     }
                 });
@@ -104,9 +109,30 @@ public class SubmitApplicationActivity extends AppCompatActivity {
             errorTextView.setText("Cannot apply - not currently enrolled");
             return;
         }
-    }
 
-    void storeStudentInfo(Application studentInfo, boolean Eligible, String reasons) {
+        boolean eligible = true;
+        String reasons = "";
+        if(studentInfo.getCumulativeGPA() < 3.2) {
+            eligible = false;
+            reasons = reasons + "GPA";
+        }
+        if(studentInfo.getRecentCreditHours() < 12) {
+            eligible = false;
+            reasons = reasons + " credit hours during latest semester";
+        }
+        //calculate applicant's age
+        String[] dob = studentInfo.getDoB().split("-");
+        LocalDate currentDate = LocalDate.now();
+        int diffYear = currentDate.getYear() - Integer.parseInt(dob[-1]);
+        int diffMonth = currentDate.getMonthValue() - Integer.parseInt(dob[0]);
+        int diffDay = currentDate.getDayOfMonth() - Integer.parseInt(dob[1]);
+        int age = ((diffYear * 365) + (diffMonth * 31) + diffDay)/365;
+        if(age < 23) {
+            eligible = false;
+            reasons = reasons + " age";
+        }
+
+        //Store in applicants data store
         Map<String, Object> student = new HashMap<>();
         student.put("firstName", studentInfo.getFirstName());
         student.put("lastName", studentInfo.getLastName());
@@ -119,7 +145,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         student.put("academicStatus", studentInfo.getAcademicStatus());
         student.put("cumulativeGPA", studentInfo.getCumulativeGPA());
         student.put("recentCreditHours", studentInfo.getRecentCreditHours());
-        student.put("eligibility", Eligible);
+        student.put("eligibility", eligible);
         student.put("reasons", reasons);
 
         db.collection("ApplicantsDataStore")
