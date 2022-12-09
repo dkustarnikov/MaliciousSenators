@@ -1,3 +1,8 @@
+//Program Name:Module 2 Malicious Senators
+//Programmer Name: Kyle Name
+//Description: Allows users to submit an application
+//Date Created: 12/9/2022
+
 package com.malicioussenators;
 
 import static com.malicioussenators.CONSTANTS.APPLICANTS_DATA_STORE;
@@ -272,18 +277,5 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                 }
             }
         });
-
-        /*
-         * First name
-         * Last name
-         * Zip code
-         * DOB
-         * Email
-         * Phone number
-         * Student Number
-         */
-
-//        \d{2}-\d{2}-\d{2} == dd-mm-yy
-
     }
 }
