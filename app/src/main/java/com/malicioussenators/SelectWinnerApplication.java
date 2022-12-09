@@ -1,5 +1,6 @@
 package com.malicioussenators;
 
+import static com.malicioussenators.CONSTANTS.ACCOUNTING_DATA_STORE;
 import static com.malicioussenators.CONSTANTS.APPLICANTS_DATA_STORE;
 import static com.malicioussenators.CONSTANTS.AWARDED_DATA_STORE;
 import static com.malicioussenators.CONSTANTS.REGISTRAR_DATA_STORE;
@@ -14,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.malicioussenators.models.AccountingData;
 import com.malicioussenators.models.Application;
+import com.malicioussenators.models.AwardedData;
 import com.malicioussenators.models.RegistrarData;
 
 import java.util.Collection;
@@ -30,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class SelectWinnerApplication extends AppCompatActivity {
 
-    Button readyButton, steadyButton, pickWinnerButton;
+    Button readyButton, steadyButton, goButton, pickWinnerButton;
 
     //Linking the voting system
     Button showTuitionPaidStudent1Button, castVoteStudent1Button,
@@ -38,6 +41,16 @@ public class SelectWinnerApplication extends AppCompatActivity {
             endVotingButton;
     TextView studentName1VotingTextView, student1TuitionPaidTextView, votingResultsStudent1,
             studentName2VotingTextView, student2TuitionPaidTextView, votingResultsStudent2;
+
+    public AwardedData getAwardData(RegistrarData winnerInfo, String awardCriteria, int awardAmount) {
+        AwardedData winner = new AwardedData();
+        winner.setStudentNumber(winnerInfo.getStudentNumber());
+        winner.setFirstName(winnerInfo.getFirstName());
+        winner.setLastName(winnerInfo.getLastName());
+        winner.setAwardCriteria(awardCriteria);
+        winner.setAwardedAmount(awardAmount);
+        return winner;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +63,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
         readyButton = findViewById(R.id.readyButton);
         steadyButton = findViewById(R.id.steadyButton);
         pickWinnerButton = findViewById(R.id.pickWinnerButton);
+        goButton = findViewById(R.id.goButton);
 
         showTuitionPaidStudent1Button = findViewById(R.id.showTuitionPaidStudent1Button);
         castVoteStudent1Button = findViewById(R.id.castVoteStudent1Button);
@@ -69,6 +83,9 @@ public class SelectWinnerApplication extends AppCompatActivity {
         HashMap<String, Application> applicantsDataStoreMap = new HashMap<>();
         AtomicReference<HashMap<String, RegistrarData>> tempRegistrarsDataStoreMap = new AtomicReference<>(new HashMap<>());
         HashMap<String, RegistrarData> registrarsDataStoreMap = new HashMap<>();
+        HashMap<String, AccountingData> accountingDataHashMap = new HashMap<>();
+
+
 
 
         readyButton.setOnClickListener(view -> {
@@ -91,6 +108,18 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     tempRegistrarsDataStoreMap.get().put(doc.get("studentNumber").toString(), doc.toObject(RegistrarData.class));
                 }
                 steadyButton.setEnabled(false);
+                goButton.setEnabled(true);
+            });
+        });
+
+        goButton.setOnClickListener(view -> {
+            db.collection(ACCOUNTING_DATA_STORE)
+                    .get().addOnCompleteListener(task -> {
+                List<DocumentSnapshot> applicationDocuments = task.getResult().getDocuments();
+                for (DocumentSnapshot doc : applicationDocuments) {
+                    accountingDataHashMap.put(doc.get("studentNumber").toString(), doc.toObject(AccountingData.class));
+                }
+                goButton.setEnabled(false);
                 pickWinnerButton.setEnabled(true);
             });
         });
@@ -162,10 +191,12 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 Toast.makeText(this, "Highest cumulativeGPA winner is selected", Toast.LENGTH_LONG).show();
 //                RegistrarData[] winnerArr = tempRegistrarsDataStoreMap.get().entrySet().toArray();
 
-                RegistrarData winner = new RegistrarData();
+                RegistrarData winnerRegistrar = new RegistrarData();
                 for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
-                    winner = (RegistrarData) entry.getValue();
+                    winnerRegistrar = (RegistrarData) entry.getValue();
                 }
+                int awardAmount = accountingDataHashMap.get(winnerRegistrar.getStudentNumber()).getTuitionPaid();
+                AwardedData winner =  getAwardData(winnerRegistrar, "Cummulative GPA", awardAmount);
 
                 //Now we add the winner to AwardedDataStore
                 db.collection(AWARDED_DATA_STORE).add(winner);
@@ -173,6 +204,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 //TODO
 
             }
+//            System.out.println(1);
             //handle tie in currentsemesterGPA
             if (registrarsDataStoreMap.size() != 1) {
                 tempRegistrarsDataStoreMap.get().clear();
@@ -197,6 +229,15 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 //TODO: sd
                 Toast.makeText(this, "Highest currentSemesterGPA winner is selected", Toast.LENGTH_LONG).show();
 
+                RegistrarData winnerRegistrar = new RegistrarData();
+                for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
+                    winnerRegistrar = (RegistrarData) entry.getValue();
+                }
+                int awardAmount = accountingDataHashMap.get(winnerRegistrar.getStudentNumber()).getTuitionPaid();
+                AwardedData winner =  getAwardData(winnerRegistrar, "Cummulative GPA, Latest Semester GPA", awardAmount);
+
+                //Now we add the winner to AwardedDataStore
+                db.collection(AWARDED_DATA_STORE).add(winner);
 
             }
             System.out.println(1);
@@ -224,20 +265,31 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 //TODO: sd
                 Toast.makeText(this, "Junior winner is selected", Toast.LENGTH_LONG).show();
 
-//                db.collection(AWARDED_DATA_STORE).add()
+                RegistrarData winnerRegistrar = new RegistrarData();
+                for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
+                    winnerRegistrar = (RegistrarData) entry.getValue();
+                }
+                int awardAmount = accountingDataHashMap.get(winnerRegistrar.getStudentNumber()).getTuitionPaid();
+                AwardedData winner =  getAwardData(winnerRegistrar, "Cummulative GPA, Latest Semester GPA, Junior", awardAmount);
+
+                //Now we add the winner to AwardedDataStore
+                db.collection(AWARDED_DATA_STORE).add(winner);
 
 
             }
+            System.out.println(1);
             //handle tie in gender
             if (registrarsDataStoreMap.size() != 1) {
                 //voting system
                 //Display the voting system
+                Collection<RegistrarData> tempList = registrarsDataStoreMap.values();
+                List<RegistrarData> nomineeList  = tempList.stream().collect(Collectors.toList());
 
                 votesForStudentOne.set(0);
                 votesForStudentTwo.set(0);
 
-                String studentOneName = "John";
-                String studentTwoName = "Dmitry";
+                String studentOneName = nomineeList.get(0).getFirstName() + ' ' + nomineeList.get(0).getLastName();
+                String studentTwoName = nomineeList.get(1).getFirstName() + ' ' + nomineeList.get(1).getLastName();
 
                 String studentOneTuitionPaid = "$0";
                 String studentTwoTuitionPaid = "$5000";
@@ -269,23 +321,35 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 //TODO: sd
                 Toast.makeText(this, "Female winner is selected", Toast.LENGTH_LONG).show();
 
+                RegistrarData winnerRegistrar = new RegistrarData();
+                for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
+                    winnerRegistrar = (RegistrarData) entry.getValue();
+                }
+                int awardAmount = accountingDataHashMap.get(winnerRegistrar.getStudentNumber()).getTuitionPaid();
+                AwardedData winner =  getAwardData(winnerRegistrar, "Cummulative GPA, Latest Semester GPA, Junior, Female", awardAmount);
+
+                //Now we add the winner to AwardedDataStore
+                db.collection(AWARDED_DATA_STORE).add(winner);
+
             }
         });
 
         endVotingButton.setOnClickListener(view -> {
             //TODO: The logic for after voting ends
+            Collection<RegistrarData> tempList = registrarsDataStoreMap.values();
+            List<RegistrarData> nomineeList  = tempList.stream().collect(Collectors.toList());
+            AwardedData winner = new AwardedData();
             if (votesForStudentOne.intValue() > votesForStudentTwo.intValue()) {
                 Toast.makeText(this, "Winner is studentOne", Toast.LENGTH_LONG).show();
-
-
-
+                int awardAmount = accountingDataHashMap.get(nomineeList.get(0).getStudentNumber()).getTuitionPaid();
+                winner =  getAwardData(nomineeList.get(0), "Cummulative GPA, Latest Semester GPA, Junior, Interview", awardAmount);
+                db.collection(AWARDED_DATA_STORE).add(winner);
             }
-            else if (votesForStudentOne.intValue() > votesForStudentTwo.intValue()) {
+            else if (votesForStudentOne.intValue() < votesForStudentTwo.intValue()) {
                 Toast.makeText(this, "Winner is studentTwo", Toast.LENGTH_LONG).show();
-
-
-
-
+                int awardAmount = accountingDataHashMap.get(nomineeList.get(1).getStudentNumber()).getTuitionPaid();
+                winner =  getAwardData(nomineeList.get(1), "Cummulative GPA, Latest Semester GPA, Junior, Interview", awardAmount);
+                db.collection(AWARDED_DATA_STORE).add(winner);
             }
             else {
                 Toast.makeText(this, "One more vote needed", Toast.LENGTH_LONG).show();
@@ -295,9 +359,22 @@ public class SelectWinnerApplication extends AppCompatActivity {
 
         showTuitionPaidStudent1Button.setOnClickListener(view -> {
             student1TuitionPaidTextView.setVisibility(View.VISIBLE);
+            Collection<RegistrarData> tempList = registrarsDataStoreMap.values();
+            List<RegistrarData> nomineeList  = tempList.stream().collect(Collectors.toList());
+
+            int tuitionPaid = accountingDataHashMap.get(nomineeList.get(0).getStudentNumber()).getTuitionPaid();
+            student1TuitionPaidTextView.setText('$' + String.valueOf(tuitionPaid));
         });
 
-        showTuitionPaidStudent2Button.setOnClickListener(view -> student2TuitionPaidTextView.setVisibility(View.VISIBLE));
+
+        showTuitionPaidStudent2Button.setOnClickListener(view -> {
+            student2TuitionPaidTextView.setVisibility(View.VISIBLE);
+            Collection<RegistrarData> tempList = registrarsDataStoreMap.values();
+            List<RegistrarData> nomineeList  = tempList.stream().collect(Collectors.toList());
+
+            int tuitionPaid = accountingDataHashMap.get(nomineeList.get(1).getStudentNumber()).getTuitionPaid();
+            student2TuitionPaidTextView.setText('$' + String.valueOf(tuitionPaid));
+        });
 
         castVoteStudent1Button.setOnClickListener(view -> {
             votesForStudentOne.set(votesForStudentOne.get() + 1);
@@ -308,71 +385,6 @@ public class SelectWinnerApplication extends AppCompatActivity {
             votesForStudentTwo.set(votesForStudentTwo.get() + 1);
             votingResultsStudent2.setText(String.valueOf(votesForStudentTwo.get()));
         });
-
-
-
-        //Ready
-        //Steady
-        //Pick Winner
-
-
-//        db.collection(APPLICANTS_DATA_STORE)
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    List<DocumentSnapshot> applicationDocuments = task.getResult().getDocuments();
-//                    for (DocumentSnapshot doc : applicationDocuments) {
-//                        applicantsDataStoreMap.put(doc.get("studentNumber").toString(), doc.toObject(Application.class));
-//                        //At this point we have the studentNumber
-//                        String studentNumber = doc.get("studentNumber").toString();
-//                        //So we just pull a user with that studentNumber from Registrar and store it
-//
-//                        db.collection(REGISTRAR_DATA_STORE)
-//                                .whereEqualTo("studentNumber", studentNumber)
-//                                .get().addOnCompleteListener(task12 -> {
-//                            List<DocumentSnapshot> registrarsDocuments = task12.getResult().getDocuments();
-//                            if (!registrarsDocuments.isEmpty()) {
-//                                tempRegistrarsDataStoreMap.put(studentNumber, registrarsDocuments.get(0).toObject(RegistrarData.class));
-//                            }
-//                            System.out.println(1);
-//                        });
-//                        //At this point we have all applicants
-//                        //                      all applicants' registrar data
-//                    }
-//                });
-//
-//
-//        System.out.println("The final result");
-//
-//
-//        System.out.println(1);
-
-
-/*
-        //Get all registrar entries ordered by gpa
-
-        //Get all applicants entries
-
-        HashMap<String, Object> Applicants = db.collection().orderBy("gpa")
-
-        YourGuy = new Guy();
-        HashMap<String, Object> Applicants -> String is the studentNumber, object is all information;
-        List<Object> registrarEntries;
-
-        for (entry : registrarEntries) {
-            if (Applicants.get(entry.studentNumber)) {
-                YourGuy = entry; //YourGuy is the person with the higherst gpa in applicants
-            }
-        }
-        for (entry in registrarEntries) {
-            for (applicant in Applicants) {
-                if (entry.studentNumber == applicant.studentNumber) {
-                    YourGuys = entry or applicant (whatever you need to find)
-                    break;
-                }
-            }
-        }
-*/
-
 
     }
 }

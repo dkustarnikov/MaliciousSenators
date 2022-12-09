@@ -42,13 +42,13 @@
         android:id="@+id/pickWinnerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:enabled="false"
         android:text="Pick Winner!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/steadyButton" />
+        app:layout_constraintTop_toBottomOf="@+id/goButton" />
 
     <TextView
         android:id="@+id/studentName1VotingTextView"
@@ -149,5 +149,16 @@
         app:layout_constraintEnd_toEndOf="@+id/castVoteStudent2Button"
         app:layout_constraintStart_toStartOf="@+id/castVoteStudent2Button"
         app:layout_constraintTop_toBottomOf="@+id/castVoteStudent2Button" />
+
+    <Button
+        android:id="@+id/goButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Go"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/steadyButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
