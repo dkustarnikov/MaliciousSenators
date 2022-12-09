@@ -225,6 +225,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
 
                 }
+                return;
 
             }
 //            System.out.println(1);
@@ -281,7 +282,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
 
                 }
-
+                return;
             }
             System.out.println(1);
             //handle tie in academicStatus
@@ -290,7 +291,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 for (Map.Entry entry : tempRegistrarsDataStoreMap.get().entrySet()) {
                     String studentNumber = entry.getKey().toString();
                     RegistrarData s1 = (RegistrarData) entry.getValue();
-                    if (s1.getGender().equals("Female")) {
+                    if (s1.getGender().equalsIgnoreCase("Female")) {
                         registrarsDataStoreMap.put(studentNumber, s1);
                     }
                 }
@@ -337,8 +338,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
 
                 }
-
-
+                return;
             }
             System.out.println(1);
             //handle tie in gender
@@ -414,6 +414,8 @@ public class SelectWinnerApplication extends AppCompatActivity {
 
                 }
 
+                return;
+
             }
         });
 
@@ -449,6 +451,8 @@ public class SelectWinnerApplication extends AppCompatActivity {
 
                 }
 
+                return;
+
             }
             else if (votesForStudentOne.intValue() < votesForStudentTwo.intValue()) {
                 Toast.makeText(this, "Winner is studentTwo", Toast.LENGTH_LONG).show();
@@ -477,6 +481,7 @@ public class SelectWinnerApplication extends AppCompatActivity {
                     dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
 
                 }
+                return;
             }
             else {
                 Toast.makeText(this, "One more vote needed", Toast.LENGTH_LONG).show();
