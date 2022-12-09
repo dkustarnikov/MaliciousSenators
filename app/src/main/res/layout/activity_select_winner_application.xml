@@ -14,6 +14,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="$moneys"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/studentName2VotingTextView"
         app:layout_constraintTop_toBottomOf="@+id/studentName2VotingTextView" />
 
@@ -57,12 +58,14 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:text="studentName1TextView"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pickWinnerButton" />
 
     <TextView
         android:id="@+id/studentName2VotingTextView"
         android:layout_width="wrap_content"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
@@ -77,6 +80,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="$moneys"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/studentName1VotingTextView"
         app:layout_constraintTop_toBottomOf="@+id/studentName1VotingTextView" />
 
@@ -87,6 +91,7 @@
         android:layout_marginTop="24dp"
         android:text="Show financial situation"
         android:textSize="10sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/studentName1VotingTextView"
         app:layout_constraintTop_toBottomOf="@+id/student1TuitionPaidTextView" />
 
@@ -97,6 +102,7 @@
         android:layout_marginTop="24dp"
         android:text="Show financial situation"
         android:textSize="10sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/studentName2VotingTextView"
         app:layout_constraintTop_toBottomOf="@+id/student2TuitionPaidTextView" />
 
@@ -106,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Cast vote"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/showTuitionPaidStudent1Button"
         app:layout_constraintStart_toStartOf="@+id/showTuitionPaidStudent1Button"
         app:layout_constraintTop_toBottomOf="@+id/showTuitionPaidStudent1Button" />
@@ -116,6 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Cast vote"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/showTuitionPaidStudent2Button"
         app:layout_constraintStart_toStartOf="@+id/showTuitionPaidStudent2Button"
         app:layout_constraintTop_toBottomOf="@+id/showTuitionPaidStudent2Button" />
@@ -126,6 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
         android:text="End voting"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/votingResultsStudent2" />
@@ -136,6 +145,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="0"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/castVoteStudent1Button"
         app:layout_constraintStart_toStartOf="@+id/castVoteStudent1Button"
         app:layout_constraintTop_toBottomOf="@+id/castVoteStudent1Button" />
@@ -146,6 +156,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="0"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/castVoteStudent2Button"
         app:layout_constraintStart_toStartOf="@+id/castVoteStudent2Button"
         app:layout_constraintTop_toBottomOf="@+id/castVoteStudent2Button" />
@@ -155,6 +166,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:enabled="false"
         android:text="Go"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

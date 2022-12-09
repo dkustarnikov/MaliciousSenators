@@ -20,6 +20,7 @@ import com.malicioussenators.models.Application;
 import com.malicioussenators.models.AwardedData;
 import com.malicioussenators.models.RegistrarData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +42,8 @@ public class SelectWinnerApplication extends AppCompatActivity {
             endVotingButton;
     TextView studentName1VotingTextView, student1TuitionPaidTextView, votingResultsStudent1,
             studentName2VotingTextView, student2TuitionPaidTextView, votingResultsStudent2;
+
+    DataHelper dh = new DataHelper();
 
     public AwardedData getAwardData(RegistrarData winnerInfo, String awardCriteria, int awardAmount) {
         AwardedData winner = new AwardedData();
@@ -86,6 +89,8 @@ public class SelectWinnerApplication extends AppCompatActivity {
         HashMap<String, AccountingData> accountingDataHashMap = new HashMap<>();
 
 
+        String emailsFileName = "emails.txt";
+        dh.createTextFile(emailsFileName, SelectWinnerApplication.this);
 
 
         readyButton.setOnClickListener(view -> {
@@ -335,7 +340,6 @@ public class SelectWinnerApplication extends AppCompatActivity {
         });
 
         endVotingButton.setOnClickListener(view -> {
-            //TODO: The logic for after voting ends
             Collection<RegistrarData> tempList = registrarsDataStoreMap.values();
             List<RegistrarData> nomineeList  = tempList.stream().collect(Collectors.toList());
             AwardedData winner = new AwardedData();
@@ -344,17 +348,64 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 int awardAmount = accountingDataHashMap.get(nomineeList.get(0).getStudentNumber()).getTuitionPaid();
                 winner =  getAwardData(nomineeList.get(0), "Cummulative GPA, Latest Semester GPA, Junior, Interview", awardAmount);
                 db.collection(AWARDED_DATA_STORE).add(winner);
+
+                //we need to:
+                //Go through all applicants, and if its the winner, let them know, if not, let them know
+                Collection<Application> applicants = applicantsDataStoreMap.values();
+                List<Application> applicantsList  = new ArrayList<>(applicants);
+
+                for (Application app: applicantsList) {
+                    String email = app.geteMail();
+                    String studentNumber = app.getStudentNumber();
+
+                    String data;
+                    if (winner.getStudentNumber().equals(studentNumber)) {
+                        //We write it to a file
+                        data = email + " - Awarded";
+                    }
+                    else {
+                        //We write it to a file
+                        data = email + " - Not awarded";
+                    }
+                    dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
+
+                }
+
             }
             else if (votesForStudentOne.intValue() < votesForStudentTwo.intValue()) {
                 Toast.makeText(this, "Winner is studentTwo", Toast.LENGTH_LONG).show();
                 int awardAmount = accountingDataHashMap.get(nomineeList.get(1).getStudentNumber()).getTuitionPaid();
                 winner =  getAwardData(nomineeList.get(1), "Cummulative GPA, Latest Semester GPA, Junior, Interview", awardAmount);
                 db.collection(AWARDED_DATA_STORE).add(winner);
+
+                //we need to:
+                //Go through all applicants, and if its the winner, let them know, if not, let them know
+                Collection<Application> applicants = applicantsDataStoreMap.values();
+                List<Application> applicantsList  = new ArrayList<>(applicants);
+
+                for (Application app: applicantsList) {
+                    String email = app.geteMail();
+                    String studentNumber = app.getStudentNumber();
+
+                    String data;
+                    if (winner.getStudentNumber().equals(studentNumber)) {
+                        //We write it to a file
+                        data = email + " - Awarded";
+                    }
+                    else {
+                        //We write it to a file
+                        data = email + " - Not awarded";
+                    }
+                    dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
+
+                }
             }
             else {
                 Toast.makeText(this, "One more vote needed", Toast.LENGTH_LONG).show();
-
             }
+
+
+
         });
 
         showTuitionPaidStudent1Button.setOnClickListener(view -> {

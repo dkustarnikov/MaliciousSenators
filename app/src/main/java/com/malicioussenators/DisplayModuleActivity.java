@@ -1,6 +1,9 @@
 package com.malicioussenators;
 
+import static com.malicioussenators.CONSTANTS.ACCOUNTING_DATA_STORE;
 import static com.malicioussenators.CONSTANTS.APPLICANTS_DATA_STORE;
+import static com.malicioussenators.CONSTANTS.AWARDED_DATA_STORE;
+import static com.malicioussenators.CONSTANTS.REGISTRAR_DATA_STORE;
 
 import android.os.Bundle;
 import android.view.View;
@@ -130,9 +133,9 @@ public class DisplayModuleActivity extends AppCompatActivity {
                 //Because by using this button we are extracting ALL information, we go through the list of ALL DataStores
                 ArrayList<String> dataStores = new ArrayList<>();
 
-                dataStores.add("RegistrarDataStore");
-                dataStores.add("AwardedDataStore");
-                dataStores.add("AccountingDataStore");
+                dataStores.add(REGISTRAR_DATA_STORE);
+                dataStores.add(AWARDED_DATA_STORE);
+                dataStores.add(ACCOUNTING_DATA_STORE);
                 dataStores.add(APPLICANTS_DATA_STORE);
 
                 //This is going to be the timestamp for file creation.
