@@ -206,7 +206,25 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 //Now we add the winner to AwardedDataStore
                 db.collection(AWARDED_DATA_STORE).add(winner);
 
-                //TODO
+                Collection<Application> applicants = applicantsDataStoreMap.values();
+                List<Application> applicantsList  = new ArrayList<>(applicants);
+
+                for (Application app: applicantsList) {
+                    String email = app.geteMail();
+                    String studentNumber = app.getStudentNumber();
+
+                    String data;
+                    if (winner.getStudentNumber().equals(studentNumber)) {
+                        //We write it to a file
+                        data = email + " - Awarded";
+                    }
+                    else {
+                        //We write it to a file
+                        data = email + " - Not awarded";
+                    }
+                    dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
+
+                }
 
             }
 //            System.out.println(1);
@@ -244,6 +262,26 @@ public class SelectWinnerApplication extends AppCompatActivity {
                 //Now we add the winner to AwardedDataStore
                 db.collection(AWARDED_DATA_STORE).add(winner);
 
+                Collection<Application> applicants = applicantsDataStoreMap.values();
+                List<Application> applicantsList  = new ArrayList<>(applicants);
+
+                for (Application app: applicantsList) {
+                    String email = app.geteMail();
+                    String studentNumber = app.getStudentNumber();
+
+                    String data;
+                    if (winner.getStudentNumber().equals(studentNumber)) {
+                        //We write it to a file
+                        data = email + " - Awarded";
+                    }
+                    else {
+                        //We write it to a file
+                        data = email + " - Not awarded";
+                    }
+                    dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
+
+                }
+
             }
             System.out.println(1);
             //handle tie in academicStatus
@@ -279,6 +317,26 @@ public class SelectWinnerApplication extends AppCompatActivity {
 
                 //Now we add the winner to AwardedDataStore
                 db.collection(AWARDED_DATA_STORE).add(winner);
+
+                Collection<Application> applicants = applicantsDataStoreMap.values();
+                List<Application> applicantsList  = new ArrayList<>(applicants);
+
+                for (Application app: applicantsList) {
+                    String email = app.geteMail();
+                    String studentNumber = app.getStudentNumber();
+
+                    String data;
+                    if (winner.getStudentNumber().equals(studentNumber)) {
+                        //We write it to a file
+                        data = email + " - Awarded";
+                    }
+                    else {
+                        //We write it to a file
+                        data = email + " - Not awarded";
+                    }
+                    dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
+
+                }
 
 
             }
@@ -335,6 +393,26 @@ public class SelectWinnerApplication extends AppCompatActivity {
 
                 //Now we add the winner to AwardedDataStore
                 db.collection(AWARDED_DATA_STORE).add(winner);
+
+                Collection<Application> applicants = applicantsDataStoreMap.values();
+                List<Application> applicantsList  = new ArrayList<>(applicants);
+
+                for (Application app: applicantsList) {
+                    String email = app.geteMail();
+                    String studentNumber = app.getStudentNumber();
+
+                    String data;
+                    if (winner.getStudentNumber().equals(studentNumber)) {
+                        //We write it to a file
+                        data = email + " - Awarded";
+                    }
+                    else {
+                        //We write it to a file
+                        data = email + " - Not awarded";
+                    }
+                    dh.writeToTextFile(emailsFileName, data, SelectWinnerApplication.this);
+
+                }
 
             }
         });
