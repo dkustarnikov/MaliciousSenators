@@ -42,10 +42,12 @@ public class SubmitApplicationActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Application studentInfo;
     DocumentReference studentDoc;
+    static String Registrar_Data_Store = "RegistrarDataStore";
+    static String Applicant_Data_Store = "ApplicantsDataStore";
 
     public void MainLogic1() {
         //call the data store and wait for a response
-        db.collection("RegistrarDataStore")
+        db.collection(Registrar_Data_Store)
                 .whereEqualTo("studentNumber", studentInfo.getStudentNumber()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -92,10 +94,12 @@ public class SubmitApplicationActivity extends AppCompatActivity {
 
                         studentInfo.setGender(documents.get(0).get("gender").toString());
                         studentInfo.setAcademicStatus(documents.get(0).get("academicStatus").toString());
-                        double GPA = (double) documents.get(0).getData().get("cumulativeGPA");
-                        long credit = (long) documents.get(0).getData().get("recentCreditHours");
-                        studentInfo.setCumulativeGPA(GPA);
-                        studentInfo.setRecentCreditHours(credit);
+                        Number GPA = (Number) documents.get(0).getData().get("cumulativeGPA");
+                        Number latestGPA = (Number) documents.get(0).getData().get("currentSemesterGPA");
+                        Number credit = (Number) documents.get(0).getData().get("recentCreditHours");
+                        studentInfo.setCumulativeGPA(GPA.doubleValue());
+                        studentInfo.setLatestGPA(latestGPA.doubleValue());
+                        studentInfo.setRecentCreditHours(credit.longValue());
                         if(contactNoMatch) {
                             contactError = contactError + " do not match Registrar Data Store. Update to new value(s)? (y/n)";
                             errorTextView.setText(contactError);
@@ -115,6 +119,12 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                             return;
                         }
                         MainLogic2();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    errorTextView.setText("Registrar Office Data Store is unreachable");
                     }
                 });
     }
@@ -158,11 +168,12 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         student.put("gender", studentInfo.getGender());
         student.put("academicStatus", studentInfo.getAcademicStatus());
         student.put("cumulativeGPA", studentInfo.getCumulativeGPA());
+        student.put("currentSemesterGPA", studentInfo.getLatestGPA());
         student.put("recentCreditHours", studentInfo.getRecentCreditHours());
         student.put("eligibility", eligible);
         student.put("reasons", reasons);
 
-        db.collection("ApplicantsDataStore")
+        db.collection(Applicant_Data_Store)
                 .add(student)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -173,7 +184,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        errorTextView.setText("Something went wrong when sending your application to the data store");
+                        errorTextView.setText("Applicant Data Store is unreachable");
                     }
                 });
     }

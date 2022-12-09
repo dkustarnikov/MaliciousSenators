@@ -11,7 +11,16 @@ public class Application {
     String gender;
     String academicStatus;
     double cumulativeGPA;
+    double latestGPA;
     long recentCreditHours;
+
+    public double getLatestGPA() {
+        return latestGPA;
+    }
+
+    public void setLatestGPA(double latestGPA) {
+        this.latestGPA = latestGPA;
+    }
 
     public Application() {
         firstName = "";
