@@ -11,12 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/contactButton"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton"
-        app:layout_constraintVertical_bias="0.546" />
+        app:layout_constraintVertical_bias="0.785" />
 
     <EditText
         android:id="@+id/firstNameEditText"
@@ -25,8 +24,8 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="95dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/lastNameEditText"
@@ -35,9 +34,8 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/firstNameEditText"
-        tools:layout_editor_absoluteX="95dp"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstNameEditText" />
 
     <EditText
         android:id="@+id/zipCodeEditText"
@@ -46,8 +44,8 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/lastNameEditText"
-        tools:layout_editor_absoluteX="95dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastNameEditText" />
 
     <TextView
         android:id="@+id/textView2"
@@ -65,8 +63,8 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@+id/zipCodeEditText"
-        tools:layout_editor_absoluteX="95dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zipCodeEditText" />
 
     <TextView
         android:id="@+id/textView3"
@@ -84,8 +82,8 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@+id/dobEditText"
-        tools:layout_editor_absoluteX="94dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dobEditText" />
 
     <TextView
         android:id="@+id/textView4"
@@ -100,10 +98,11 @@
         android:id="@+id/phoneNumberEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
-        tools:layout_editor_absoluteX="95dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
     <TextView
         android:id="@+id/textView5"
@@ -118,11 +117,11 @@
         android:id="@+id/studentNumberEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText"
-        tools:layout_editor_absoluteX="94dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText" />
 
     <TextView
         android:id="@+id/textView6"
@@ -137,7 +136,7 @@
         android:id="@+id/submitApplicationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="36dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -179,7 +178,7 @@
         android:text="Update"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton"
         app:layout_constraintVertical_bias="1.0" />

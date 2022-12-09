@@ -76,7 +76,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                             infoNoMatch = true;
                         }
                         if(!studentInfo.geteMail().equals(documents.get(0).get("eMail").toString())) {
-                            contactError = contactError + "Zip code";
+                            contactError = contactError + "e-mail";
                             contactNoMatch = true;
                         }
                         if(!studentInfo.getPhoneNum().equals(documents.get(0).get("phoneNumber").toString())) {
@@ -102,16 +102,15 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                             studentDoc = documents.get(0).getReference();
                             //enable user error response
                             contactButton.setEnabled(true);
-                            contactErrorEditText.setEnabled(true);
+                            contactErrorEditText.setFocusableInTouchMode(true);
                             //disable normal user response
-                            firstNameEditText.setEnabled(false);
-                            lastNameEditText.setEnabled(false);
-                            zipCodeEditText.setEnabled(false);
-                            dobEditText.setEnabled(false);
-                            emailEditText.setEnabled(false);
-                            phoneNumberEditText.setEnabled(false);
-                            studentNumEditText.setEnabled(false);
-                            contactErrorEditText.setEnabled(false);
+                            firstNameEditText.setFocusable(false);
+                            lastNameEditText.setFocusable(false);
+                            zipCodeEditText.setFocusable(false);
+                            dobEditText.setFocusable(false);
+                            emailEditText.setFocusable(false);
+                            phoneNumberEditText.setFocusable(false);
+                            studentNumEditText.setFocusable(false);
                             submitButton.setEnabled(false);
                             return;
                         }
@@ -204,7 +203,7 @@ public class SubmitApplicationActivity extends AppCompatActivity {
         studentInfo = new Application();
         errorTextView.setText("");
         contactButton.setEnabled(false);
-        contactErrorEditText.setEnabled(false);
+        contactErrorEditText.setFocusable(false);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,32 +231,30 @@ public class SubmitApplicationActivity extends AppCompatActivity {
                     studentDoc.update("phoneNumber", studentInfo.getPhoneNum());
                     //disable user error response
                     contactButton.setEnabled(false);
-                    contactErrorEditText.setEnabled(false);
+                    contactErrorEditText.setFocusable(false);
                     //enable normal user response
-                    firstNameEditText.setEnabled(true);
-                    lastNameEditText.setEnabled(true);
-                    zipCodeEditText.setEnabled(true);
-                    dobEditText.setEnabled(true);
-                    emailEditText.setEnabled(true);
-                    phoneNumberEditText.setEnabled(true);
-                    studentNumEditText.setEnabled(true);
-                    contactErrorEditText.setEnabled(true);
+                    firstNameEditText.setFocusableInTouchMode(true);
+                    lastNameEditText.setFocusableInTouchMode(true);
+                    zipCodeEditText.setFocusableInTouchMode(true);
+                    dobEditText.setFocusableInTouchMode(true);
+                    emailEditText.setFocusableInTouchMode(true);
+                    phoneNumberEditText.setFocusableInTouchMode(true);
+                    studentNumEditText.setFocusableInTouchMode(true);
                     submitButton.setEnabled(true);
                     MainLogic2();
                 } else if (Answer.equals("N") || Answer.equals("n")) {
                     errorTextView.setText("Please reenter data");
                     //disable user error response
                     contactButton.setEnabled(false);
-                    contactErrorEditText.setEnabled(false);
+                    contactErrorEditText.setFocusable(false);
                     //enable normal user response
-                    firstNameEditText.setEnabled(true);
-                    lastNameEditText.setEnabled(true);
-                    zipCodeEditText.setEnabled(true);
-                    dobEditText.setEnabled(true);
-                    emailEditText.setEnabled(true);
-                    phoneNumberEditText.setEnabled(true);
-                    studentNumEditText.setEnabled(true);
-                    contactErrorEditText.setEnabled(true);
+                    firstNameEditText.setFocusableInTouchMode(true);
+                    lastNameEditText.setFocusableInTouchMode(true);
+                    zipCodeEditText.setFocusableInTouchMode(true);
+                    dobEditText.setFocusableInTouchMode(true);
+                    emailEditText.setFocusableInTouchMode(true);
+                    phoneNumberEditText.setFocusableInTouchMode(true);
+                    studentNumEditText.setFocusableInTouchMode(true);
                     submitButton.setEnabled(true);
                 } else {
                     errorTextView.setText("Invalid response. Update contact information to new value(s) (y/n)?");
