@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
@@ -15,9 +14,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+//Program Name: DataHelper
+//Programmer Name: Dmitry Kustarnikov
+//Description: This is a helper class to work with some data
+//Date Created: 12/5/2022
+
 
 public class DataHelper {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -41,21 +44,10 @@ public class DataHelper {
         db.collection(dataStoreName).add(object);
     }
 
-    public Map<String, Object> getAllAsMapFromDataStore(String dataStoreName) {
-        //Check if the dataStoreName is one of the good ones
-        Map<String, Object> returnMap = new HashMap<String, Object>();
-        FirebaseFirestore methodDb = FirebaseFirestore.getInstance();
 
-        methodDb.collection(dataStoreName)
-                .get().addOnCompleteListener(task -> {
-            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-            for (DocumentSnapshot document : documents) {
-                returnMap.put(document.getId(), document.getData());
-            }
-        });
-        return returnMap;
-    }
-
+    //Description: Converts a map into an array of Jsons
+    //Pre-condition: Map<String, Object>
+    //Post-condition: ArrayList<String> - Each entry is a Json-formatted string
     public ArrayList<String> convertMapToArrayOfJsons(Map<String, Object> map) {
         ArrayList<String> returnArray = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -70,17 +62,24 @@ public class DataHelper {
         return returnArray;
     }
 
+    //Description: Create a text file
+    //Pre-condition: Filename and the activity context
+    //Post-condition: A text file is created
+
     //This method will create a text file and name it whatever the parameter is
     public void createTextFile(String fileName, Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
-//            outputStreamWriter.append("This is some new data");
             outputStreamWriter.close();
 
         } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
+
+    //Description: Writes to a file any data provided (A line at a time)
+    //Pre-condition: a file with fileName exists
+    //Post-condition: data is written to the given file
 
     //This method writes to a text file whatever data is provided (it appends data, doesn't overwrite it)
     public void writeToTextFile(String fileName, String data, Context context) {

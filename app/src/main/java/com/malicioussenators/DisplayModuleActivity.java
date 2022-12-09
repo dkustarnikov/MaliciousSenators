@@ -28,6 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//Program Name: DisplayModuleActivity
+//Programmer Name: Dmitry Kustarnikov
+//Description: Display activity that completed test cases 3 and 5
+//Date Created: 12/5/2022
+
 public class DisplayModuleActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
