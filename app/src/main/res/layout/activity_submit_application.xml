@@ -10,11 +10,13 @@
         android:id="@+id/contactErrorEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="284dp"
         android:ems="10"
         android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText"
-        tools:layout_editor_absoluteX="95dp" />
+        app:layout_constraintBottom_toTopOf="@+id/contactButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton"
+        app:layout_constraintVertical_bias="0.546" />
 
     <EditText
         android:id="@+id/firstNameEditText"
@@ -162,27 +164,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/contactErrorEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton"
-        app:layout_constraintVertical_bias="0.167" />
+        app:layout_constraintVertical_bias="0.518" />
 
     <Button
         android:id="@+id/contactButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
         android:text="Update"
-        tools:layout_editor_absoluteX="156dp"
-        tools:layout_editor_absoluteY="653dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/submitApplicationButton"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/YNTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:text="Error Response"
-        tools:layout_editor_absoluteX="307dp"
-        tools:layout_editor_absoluteY="620dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/contactErrorEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/contactErrorEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
