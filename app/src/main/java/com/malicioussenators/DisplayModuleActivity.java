@@ -133,6 +133,7 @@ public class DisplayModuleActivity extends AppCompatActivity {
                 dataStores.add("RegistrarDataStore");
                 dataStores.add("AwardedDataStore");
                 dataStores.add("AccountingDataStore");
+                dataStores.add(APPLICANTS_DATA_STORE);
 
                 //This is going to be the timestamp for file creation.
                 String currentTime = Timestamp.now().toDate().toString();
@@ -145,7 +146,7 @@ public class DisplayModuleActivity extends AppCompatActivity {
 
                     //Get all the data and store it in the tempMap
                     Map<String, Object> tempMap = new HashMap<>();
-                    db.collection("RegistrarDataStore")
+                    db.collection(dataStore)
                             .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -162,6 +163,8 @@ public class DisplayModuleActivity extends AppCompatActivity {
                                 dh.writeToTextFile(fileName, data, DisplayModuleActivity.this);
                             }
                         }
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(getApplicationContext(), dataStore + " datastore is not found", Toast.LENGTH_LONG).show();
                     });
                 }
 

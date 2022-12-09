@@ -7,6 +7,16 @@
     tools:context=".SelectWinnerApplication">
 
 
+    <TextView
+        android:id="@+id/student2TuitionPaidTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="$moneys"
+        app:layout_constraintStart_toStartOf="@+id/studentName2VotingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/studentName2VotingTextView" />
+
     <Button
         android:id="@+id/readyButton"
         android:layout_width="wrap_content"
@@ -39,5 +49,105 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/steadyButton" />
+
+    <TextView
+        android:id="@+id/studentName1VotingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="studentName1TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pickWinnerButton" />
+
+    <TextView
+        android:id="@+id/studentName2VotingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="studentName2TextView"
+        app:layout_constraintStart_toEndOf="@+id/studentName1VotingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/pickWinnerButton" />
+
+    <TextView
+        android:id="@+id/student1TuitionPaidTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="$moneys"
+        app:layout_constraintStart_toStartOf="@+id/studentName1VotingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/studentName1VotingTextView" />
+
+    <Button
+        android:id="@+id/showTuitionPaidStudent1Button"
+        android:layout_width="115dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="24dp"
+        android:text="Show financial situation"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/studentName1VotingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/student1TuitionPaidTextView" />
+
+    <Button
+        android:id="@+id/showTuitionPaidStudent2Button"
+        android:layout_width="115dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="24dp"
+        android:text="Show financial situation"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/studentName2VotingTextView"
+        app:layout_constraintTop_toBottomOf="@+id/student2TuitionPaidTextView" />
+
+    <Button
+        android:id="@+id/castVoteStudent1Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Cast vote"
+        app:layout_constraintEnd_toEndOf="@+id/showTuitionPaidStudent1Button"
+        app:layout_constraintStart_toStartOf="@+id/showTuitionPaidStudent1Button"
+        app:layout_constraintTop_toBottomOf="@+id/showTuitionPaidStudent1Button" />
+
+    <Button
+        android:id="@+id/castVoteStudent2Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Cast vote"
+        app:layout_constraintEnd_toEndOf="@+id/showTuitionPaidStudent2Button"
+        app:layout_constraintStart_toStartOf="@+id/showTuitionPaidStudent2Button"
+        app:layout_constraintTop_toBottomOf="@+id/showTuitionPaidStudent2Button" />
+
+    <Button
+        android:id="@+id/endVotingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:text="End voting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/votingResultsStudent2" />
+
+    <TextView
+        android:id="@+id/votingResultsStudent1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/castVoteStudent1Button"
+        app:layout_constraintStart_toStartOf="@+id/castVoteStudent1Button"
+        app:layout_constraintTop_toBottomOf="@+id/castVoteStudent1Button" />
+
+    <TextView
+        android:id="@+id/votingResultsStudent2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/castVoteStudent2Button"
+        app:layout_constraintStart_toStartOf="@+id/castVoteStudent2Button"
+        app:layout_constraintTop_toBottomOf="@+id/castVoteStudent2Button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
